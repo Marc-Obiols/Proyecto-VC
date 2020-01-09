@@ -37,11 +37,11 @@ T = table(Test,Y);
 Modelo = trainClassifier(T);
 
 
-% Matriz resultado: predicción de cada ventana
+% Matriz resultado: predicciÃ³n de cada ventana
 [fFtWindow,cFtWindow] = size(FeaturesWindow);
 Result = repmat('',fFtWindow,1);
 
-% Calcular predicción por cada ventana
+% Calcular predicciÃ³n por cada ventana
 for i = 1:1:fFtWindow
     Result(i,:) = predict(Modelo.ClassificationKNN,FeaturesWindow(i,:));
 end
@@ -50,13 +50,22 @@ end
 ImRes = PrintResult(Result,I,17);
 figure
 imshow(edge(ImRes))
+BlackWhite = edge(ImRes);
+for i = 1:1:f
+    for j = 1:1:c
+        if BlackWhite(i, j) == 1
+            I(i,j,1) = 255;
+            I(i,j,2) = 0;
+            I(i,j,3) = 0;
+        end
+    end
+end
+
+figure
+imshow(I);
 
 
 
 
 %B = im2col(I,[17 17], 'distinct');
 % J1 = I(:,:,1);
-
-
-
-
