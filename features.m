@@ -2,7 +2,7 @@ function [Features] = features(I,BW, tam)
 [f,c,col] = size(I);
 
 sizeF = ceil(f/tam)*ceil(c/tam);
-Features = zeros(sizeF,9);
+Features = zeros(sizeF,18);
 ContDef = 1;
 
 for i = 1:tam:f
@@ -17,6 +17,8 @@ for i = 1:tam:f
         ILC = 0;
         countU = 0;
         countL = 0;
+        countFF = 0;
+        countCF = 0;
         for k = i:1:i+tam-1
             for z = j:1:j+tam-1
                 if (k<f) && (z<c)
@@ -34,11 +36,17 @@ for i = 1:tam:f
                    end
                 else
                    countL = countL + 1; % numero de pixeles fuera de la ventana
+                   if (z > c)
+                       countCF = countCF + 1;
+                   end
                 end
+            end
+            if (k > f)
+                countFF = countFF + 1;
             end
         end
         
-        
+        countCF = countCF / 17;
         % media de color FONDO por ventana
         Features(ContDef,1) = R/(tam^2-countL-countU);
         Features(ContDef,2) = G/(tam^2-countL-countU);
@@ -51,6 +59,12 @@ for i = 1:tam:f
         Features(ContDef,6) = BC/(countU);
         Features(ContDef,9) = ILC/(countU);
         
+        xixa = I(i:1:(i+16-countFF), j:1:(j+16-countCF), 1:1:3);
+        [hog_2x2, validPoints] = extractHOGFeatures(xixa,'CellSize',[17-countFF 17-countCF], 'BlockSize', [1 1]);
+        [pxv pyv] = size(hog_2x2);
+        if pyv ~= 0
+            Features(ContDef,10:1:18) = hog_2x2(1:1:9);
+        end
         if countU > 130 && countU < 160
             meanR = (R + RC)/(tam^2-countL);
             meanG = (G + GC)/(tam^2-countL);
@@ -67,7 +81,7 @@ for i = 1:tam:f
             end
             suma = suma./(tam^2-countL);
             disp(suma);
-            Features(ContDef,7) = suma(1);
+            Features(ContDef,7) = 0;
             
         elseif countU < 131
             Features(ContDef,7) = 0; %FONDO
