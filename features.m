@@ -80,7 +80,7 @@ for i = 1:tam:f
                 end
             end
             suma = suma./(tam^2-countL);
-            disp(suma);
+%             disp(suma);
             Features(ContDef,7) = 0;
             
         elseif countU < 131

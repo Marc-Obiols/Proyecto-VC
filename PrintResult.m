@@ -10,7 +10,7 @@ for i = 1:tam:f
 
         for k = i:1:i+tam-1
             for z = j:1:j+tam-1
-                if strcmp(Result(Window,:), 'Foreground')
+                if Result(Window,1) == 1
                     ResultImage(k,z) = 1;
                 end
             end

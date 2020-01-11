@@ -1,4 +1,4 @@
-[file,p1] = uigetfile(('*.bmp;*.jpg'),"Image to segment");
+[file,p1] = uigetfile(('*.bmp;*.jpg;*.png;'),"Image to segment");
 s1 = strcat(p1,file);
 [I, map] = imread(s1);
     
@@ -26,43 +26,54 @@ BW(y1:y2, x1:x2) = 1;
 Features = features(I, BW, 17);
 Test = MatrizTest(Features);
 
-
+% Read New Image
+[file,p1] = uigetfile(('*.bmp;*.jpg;*.png;'),"Image to predict");
+s1 = strcat(p1,file);
+[NewImage, map] = imread(s1);
+% NewImage = imread('Eagle 2.png');
 
 % Extraer features de las ventanas de la nueva imagen
-FeaturesWindow = FeaturesNewImage(I,17);
+FeaturesWindow = FeaturesNewImage(NewImage,17);
 
 % Prediction
-Y = ['Background'; 'Foreground';];
-T = table(Test,Y);
-Modelo = trainClassifier(T);
+% Y = ['Background'; 'Foreground';];
+% T = table(Test,Y);
+Modelo = trainClassifier(Test);
 
 
 % Matriz resultado: predicción de cada ventana
 [fFtWindow,cFtWindow] = size(FeaturesWindow);
-Result = repmat('',fFtWindow,1);
+Result = zeros(fFtWindow,1);
 
 % Calcular predicción por cada ventana
 for i = 1:1:fFtWindow
-    Result(i,:) = predict(Modelo.ClassificationKNN,FeaturesWindow(i,:));
+    Result(i,1) = predict(Modelo.ClassificationKNN,FeaturesWindow(i,:));
 end
 
 % Pintar resultado
-ImRes = PrintResult(Result,I,17);
+ImRes = PrintResult(Result,NewImage,17);
+
+% Tratar Imagen Resultado
+ImRes = imfill(ImRes,'holes');
+SE = strel('disk',11);
+ImRes = imopen(ImRes, SE);
+
 figure
 imshow(edge(ImRes))
 BlackWhite = edge(ImRes);
-for i = 1:1:f
-    for j = 1:1:c
+[fN,cN,colN] = size(NewImage);
+for i = 1:1:fN
+    for j = 1:1:cN
         if BlackWhite(i, j) == 1
-            I(i,j,1) = 255;
-            I(i,j,2) = 0;
-            I(i,j,3) = 0;
+            NewImage(i,j,1) = 255;
+            NewImage(i,j,2) = 0;
+            NewImage(i,j,3) = 0;
         end
     end
 end
 
 figure
-imshow(I);
+imshow(NewImage);
 
 
 
