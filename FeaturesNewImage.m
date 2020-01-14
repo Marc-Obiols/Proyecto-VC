@@ -5,7 +5,7 @@ function [FeatureWindow] = FeaturesNewImage(I, tam)
 
 sizeF = ceil(f/tam)*ceil(c/tam);
 Features = zeros(sizeF,9);
-FeatureWindow = zeros(sizeF,4);
+FeatureWindow = zeros(sizeF,13);
 ContDef = 1;
 
 for i = 1:tam:f

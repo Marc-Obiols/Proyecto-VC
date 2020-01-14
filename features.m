@@ -65,27 +65,7 @@ for i = 1:tam:f
         if pyv ~= 0
             Features(ContDef,10:1:18) = hog_2x2(1:1:9);
         end
-        if countU > 130 && countU < 160
-            meanR = (R + RC)/(tam^2-countL);
-            meanG = (G + GC)/(tam^2-countL);
-            meanB = (B + BC)/(tam^2-countL);
-            suma = zeros(3,1);
-            for k = i:1:i+tam-1
-                for z = j:1:j+tam-1
-                   if (k<f) && (z<c)
-                       suma(1) = suma(1) + (uint16(I(k,z,1)) - meanR)^2;
-                       suma(2) = suma(2) + (uint16(I(k,z,2)) - meanG)^2;
-                       suma(3) = suma(3) + (uint16(I(k,z,3)) - meanB)^2;
-                   end
-                end
-            end
-            suma = suma./(tam^2-countL);
-%             disp(suma);
-            Features(ContDef,7) = 0;
-            
-        elseif countU < 131
-            Features(ContDef,7) = 0; %FONDO
-        elseif countU > 159
+        if countU > 288
             Features(ContDef,7) = 1; %OBJETO
         end
         ContDef = ContDef + 1;

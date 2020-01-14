@@ -54,9 +54,17 @@ end
 ImRes = PrintResult(Result,NewImage,17);
 
 % Tratar Imagen Resultado
-ImRes = imfill(ImRes,'holes');
+
 SE = strel('disk',11);
+ImRes = imclose(ImRes, SE);
+ImRes = imfill(ImRes,'holes');
 ImRes = imopen(ImRes, SE);
+
+CC = bwconncomp(ImRes);
+stat = regionprops(CC,'Centroid','Area','PixelIdxList');
+[maxValue,index] = max([stat.Area]);
+ImRes(:,:)=0;
+ImRes(stat(index).PixelIdxList)=1;
 
 figure
 imshow(edge(ImRes))
@@ -74,9 +82,3 @@ end
 
 figure
 imshow(NewImage);
-
-
-
-
-%B = im2col(I,[17 17], 'distinct');
-% J1 = I(:,:,1);
